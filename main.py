@@ -10,7 +10,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         # Load UI file
         QtWidgets.QMainWindow.__init__(self)
-        uic.loadUi("%s/resource/3DView02.ui" % os.path.dirname(__file__), self)
+        uic.loadUi("resource/3DView02.ui", self)
 
         # Create openGL context
         self.openGL = QGLControllerWidget(self)
@@ -21,7 +21,7 @@ class MainWindow(QtWidgets.QMainWindow):
         timer.start()
 
         # Load button
-        load_icon = QIcon("%s/resource/load.png" % os.path.dirname(__file__))
+        load_icon = QIcon("resource/load.png")
         self.load_button.setIcon(load_icon)
 
         self.load_button.clicked.connect(self.load_file)

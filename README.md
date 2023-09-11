@@ -1,3 +1,21 @@
+## Linux development
+1. 
+```
+python -m venv venv
+. venv/bin/activate
+pip install --upgrade pip
+pip install cmake numpy moderngl pyrr scipy openmesh PyQt5 PyOpenGL PyOpenGL_accelerate open3d
+```
+
+2. Choose one of the following:
+```
+python main.py
+
+PYOPENGL_PLATFORM=x11 python opengl_open3d.py
+
+python vis-gui.py
+```
+
 ## Qt 3DViewer
 ### Qt 3DViewer is a compact tool for viewing 3D models in a user-friendly way. 
 

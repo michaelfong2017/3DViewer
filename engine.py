@@ -120,10 +120,46 @@ class QGLControllerWidget(QtOpenGL.QGLWidget):
         self.vao = self.ctx.vertex_array(self.prog, vao_content, index_buffer, 4)
         self.init_arcball()
 
+    def set_pcd(self, new_pcd):
+        if new_pcd is None:
+            self.set_scene()
+            return
+        self.mesh = new_pcd
+        # self.mesh.update_normals()
+
+        print("Pointcloud Center: " + str(new_pcd.get_center()))
+    
+        points = numpy.asarray(new_pcd.points).astype('float32')
+        colors = numpy.asarray(new_pcd.colors).astype('float32')
+        
+        attributes = numpy.concatenate((points, colors),axis=1)
+        print("Attributes shape: " + str(attributes.shape))
+
+        # Creates an index buffer
+        # index_buffer = self.ctx.buffer(numpy.array(self.mesh.face_vertex_indices(), dtype="u4").tobytes())
+        self.ctx.point_size = 50
+
+        # Creates a list of vertex buffer objects (VBOs)
+        vao_content = [(self.ctx.buffer(points.tobytes()), '3f', 'in_position'),
+                       (self.ctx.buffer(colors.tobytes()), '3f', 'in_color')]
+        self.vao = self.ctx.vertex_array(self.prog, vao_content)
+        self.init_arcball_pcd(points)
+
     def init_arcball(self):
         # Create ArcBall
         self.arc_ball = ArcBallUtil(self.width(), self.height())
         mesh_points = self.mesh.points()
+        bounding_box_min = numpy.min(mesh_points, axis=0)
+        bounding_box_max = numpy.max(mesh_points, axis=0)
+        self.center = 0.5*(bounding_box_max+bounding_box_min)
+        self.scale = numpy.linalg.norm(bounding_box_max-self.center)
+        self.arc_ball.Transform[:3, :3] /= self.scale
+        self.arc_ball.Transform[3, :3] = -self.center/self.scale
+
+    def init_arcball_pcd(self, points):
+        # Create ArcBall
+        self.arc_ball = ArcBallUtil(self.width(), self.height())
+        mesh_points = points
         bounding_box_min = numpy.min(mesh_points, axis=0)
         bounding_box_max = numpy.max(mesh_points, axis=0)
         self.center = 0.5*(bounding_box_max+bounding_box_min)

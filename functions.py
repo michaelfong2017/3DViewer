@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QColorDialog, QMessageBox
 from PyQt5 import QtWidgets
 from OpenGL.GLUT import *
 import openmesh
+import open3d as o3d
 import re
 
 
@@ -14,10 +15,12 @@ def open_file_ask(opengl_obj, obj_path, obj_name, uv_label, material_label, draw
 
 
 def open_file(file_name, opengl_obj, obj_path, obj_name, uv_label, material_label, drawcalls_label, vertices_label, triangles_label, edges_label):
-    mesh = openmesh.read_trimesh(file_name)
-    opengl_obj.set_mesh(mesh)
+    # mesh = openmesh.read_trimesh(file_name)
+    # opengl_obj.set_mesh(mesh)
+    pcd = o3d.io.read_point_cloud("test_files/heart.ply")
+    opengl_obj.set_pcd(pcd)
     set_name(file_name, obj_path, obj_name)
-    set_file_info(mesh, vertices_label, triangles_label, edges_label)
+    # set_file_info(pcd, vertices_label, triangles_label, edges_label)
 
     _, file_extension = os.path.splitext(file_name)
     file_format = file_extension.replace(".", "")
